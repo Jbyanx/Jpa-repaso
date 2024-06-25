@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootApplication
@@ -22,27 +24,42 @@ public class SpringDataJpaApplication {
 	@Bean
 	public CommandLineRunner testCustomerRepository (){
 		return args -> {
-//			Customer juan = new Customer();
-//			juan.setName("Juan");
-//			juan.setPassword("juan123");
-//
-//			customerCrudRepository.save(juan);
-//			System.out.println("Se guardo la entidad juan");
+			Customer juan = new Customer();
+			juan.setName("Juan perez");
+			juan.setPassword("juan123");
 
-//			System.out.println("=====IMPRIMIENDO LOS CUSTOMER DE LA BASE DE DATOS=====");
-//			customerCrudRepository.findAll()
-//					.forEach(each -> System.out.println(each));
+			Customer pedro = new Customer();
+			pedro.setName("Pedro villa");
+			pedro.setPassword("pello321");
 
-			System.out.println("\nBuscando e imprimiendo al cliente id 1");
-			customerCrudRepository.findById(1L)
-				.ifPresent(System.out::println);
+			Customer maria = new Customer();
+			maria.setName("maria toloza");
+			maria.setPassword("Mariuwu");
 
-			System.out.println("\nEliminando al cliente juan");
-			customerCrudRepository.deleteById(1L);
+			List<Customer> customerList = List.of(juan,pedro,maria);
 
-			System.out.println("\nBuscando e imprimiendo al cliente id 1");
-			customerCrudRepository.findById(1L)
-				.ifPresent(System.out::println);
+			System.out.println("\nGUARDANDO LOS 3 CLIENTES");
+			customerCrudRepository.saveAll(customerList);
+
+			System.out.println("\n=====IMPRIMIENDO LOS CUSTOMER DE LA BASE DE DATOS=====");
+			customerCrudRepository.findAll()
+					.forEach(System.out::println);
+
+			System.out.println("\nBuscando y editando al cliente id 2");
+			customerCrudRepository.findById(Long.valueOf(2))
+				.ifPresent(customer -> {
+					customer.setName("Pedro villa villazon");
+					customer.setPassword("pellovilla123");
+
+					customerCrudRepository.save(customer);
+				});
+
+			System.out.println("\nEliminando al cliente 1");
+			customerCrudRepository.deleteById(Long.valueOf(1));
+
+			System.out.println("\n=====IMPRIMIENDO LOS CUSTOMER DE LA BASE DE DATOS=====");
+			customerCrudRepository.findAll()
+					.forEach(System.out::println);
 		};
 	}
 }
