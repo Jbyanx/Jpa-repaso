@@ -76,8 +76,16 @@ public class SpringDataJpaApplication {
 //
 
 
-			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2");
-			customerCrudRepository.findByNameContainingAndIdGreaterThanOrderByIdDesc("ez", 2L)
+//			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2");
+//			customerCrudRepository.findByNameContainingAndIdGreaterThanOrderByIdDesc("ez", 2L)
+//					.forEach(System.out::println);
+
+			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2 JPQL y query");
+			customerCrudRepository.findByNameAndIdGreaterThan("ez", 2L)
+					.forEach(System.out::println);
+
+			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2 SQL nativo");
+			customerCrudRepository.findByNameAndIdGreaterThanUsingNativeSQL("ez", 2L)
 					.forEach(System.out::println);
 		};
 	}
