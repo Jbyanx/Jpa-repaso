@@ -1,6 +1,8 @@
 package com.bycompany;
 
+import com.bycompany.persistence.entity.Adress;
 import com.bycompany.persistence.entity.Customer;
+import com.bycompany.persistence.repository.AdressCrudRepository;
 import com.bycompany.persistence.repository.CustomerCrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,73 +22,51 @@ public class SpringDataJpaApplication {
 	@Autowired
 	private CustomerCrudRepository customerCrudRepository;
 	@Bean
-	public CommandLineRunner testQueryMethodsCommand (){
+	public CommandLineRunner testOneToOneRelationshipCommand (){
 		return args -> {
 			Customer juan = new Customer();
 			juan.setName("Juan perez");
 			juan.setPassword("juan123");
 			juan.setUsername("juan123");
 
+			Adress juanAdress = new Adress();
+			juanAdress.setCountry("Colombia");
+			juanAdress.setAdress("Manzana O casa 15, Timayui 2, Santa Marta, Magdalena");
+
+			juan.setAdress(juanAdress);
+
 			Customer jose = new Customer();
 			jose.setName("Jose ortiz");
 			jose.setPassword("joselo");
 			jose.setUsername("juooo");
 
-			Customer pedro = new Customer();
-			pedro.setName("Pedro perez");
-			pedro.setPassword("pello321");
-			pedro.setUsername("pello321");
+			Adress joseAdress = new Adress();
+			joseAdress.setCountry("Brasil");
+			joseAdress.setAdress("calle 1a barrio la libertad");
+
+			jose.setAdress(joseAdress);
 
 			Customer maria = new Customer();
 			maria.setName("maria toloza");
 			maria.setPassword("Mariuwu");
 			maria.setUsername("Mariuwu");
 
-			Customer maria2 = new Customer();
-			maria2.setName("maria villamizar");
-			maria2.setPassword("mariaaaa");
-			maria2.setUsername("Mariawa");
+			Adress mariaAdress = new Adress();
+			mariaAdress.setCountry("chile");
+			mariaAdress.setAdress("Casa 34 colonia morelos");
+			maria.setAdress(mariaAdress);
 
-			List<Customer> customerList = List.of(juan, jose, pedro,maria,maria2);
-
-			System.out.println("\nGUARDANDO LOS 4 CLIENTES");
-			customerCrudRepository.saveAll(customerList);
-
-//			System.out.println("\nPROBANDO NOMBRES QUE CONTENGAN 'E'");
-//			customerCrudRepository.findByNameContaining("e")
-//					.forEach(System.out::println);
-
-//            System.out.println("\nPROBANDO NOMBRES QUE EMPIECEN CON 'j'");
-//			customerCrudRepository.findByNameStartingWith("j")
-//					.forEach(System.out::println);
-
-
-
-//			System.out.println("\nPROBANDO NOMBRES QUE TERMINAN CON 'z' ");
-//			customerCrudRepository.readByNameEndingWith("z")
-//					.forEach(System.out::println);
-
-//            System.out.println("\nPROBANDO FIND BY USERNAME ");
-
-//			customerCrudRepository.findByUsername("Mariuwu")
-//					.forEach(System.out::println);
-//
-//			System.out.println("\nPROBANDO SEARCH BY USERNAME ");
-//			System.out.println(customerCrudRepository.searchByUsername("Mariuwu"));
-//
-
-
-//			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2");
-//			customerCrudRepository.findByNameContainingAndIdGreaterThanOrderByIdDesc("ez", 2L)
-//					.forEach(System.out::println);
-
-			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2 JPQL y query");
-			customerCrudRepository.findByNameAndIdGreaterThan("ez", 2L)
-					.forEach(System.out::println);
-
-			System.out.println("\nPROBANDO clientes que contengan 'ez' y el Id sea mayor a 2 SQL nativo");
-			customerCrudRepository.findByNameAndIdGreaterThanUsingNativeSQL("ez", 2L)
-					.forEach(System.out::println);
+			List<Customer> customerList = List.of(juan, jose,maria);
+			//customerCrudRepository.saveAll(customerList);
+		};
+	}
+	@Bean
+	public CommandLineRunner testAdressCrudRepositoryCommand (AdressCrudRepository adressCrudRepository){
+		return args -> {
+			adressCrudRepository.findAll()
+					.forEach(each -> {
+						System.out.println(each.getAdress()+" - "+each.getCustomer().getUsername());
+					});
 		};
 	}
 }

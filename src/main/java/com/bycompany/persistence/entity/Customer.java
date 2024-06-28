@@ -15,8 +15,20 @@ public class Customer {
     @Column(name = "usuario", unique = true)
     private String username;
 
+    @JoinColumn(name = "id_direccion")
+    @OneToOne(targetEntity = Adress.class, cascade = CascadeType.PERSIST)
+    private Adress adress;
+
     @Column(name = "contrasena")
     private String password;
+
+    public Adress getAdress() {
+        return adress;
+    }
+
+    public void setAdress(Adress adress) {
+        this.adress = adress;
+    }
 
     public long getId() {
         return id;
