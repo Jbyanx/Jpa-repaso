@@ -14,8 +14,8 @@ public class Adress {
     @Column(name = "direccion")
     private String adress;
 
-    @OneToOne(mappedBy = "adress")
-    private Customer customer;
+    @Column(name = "id_cliente")
+    private Long customerId;
 
     public long getId() {
         return id;
@@ -23,14 +23,6 @@ public class Adress {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public String getCountry() {
@@ -56,5 +48,13 @@ public class Adress {
                 ", country='" + country + '\'' +
                 ", adress='" + adress + '\'' +
                 '}';
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 }

@@ -2,6 +2,8 @@ package com.bycompany.persistence.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "clientes")
 public class Customer {
@@ -15,20 +17,13 @@ public class Customer {
     @Column(name = "usuario", unique = true)
     private String username;
 
-    @JoinColumn(name = "id_direccion")
-    @OneToOne(targetEntity = Adress.class, cascade = CascadeType.PERSIST)
-    private Adress adress;
+
+    @OneToMany(targetEntity = Adress.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_cliente")
+    private List<Adress> adresses;
 
     @Column(name = "contrasena")
     private String password;
-
-    public Adress getAdress() {
-        return adress;
-    }
-
-    public void setAdress(Adress adress) {
-        this.adress = adress;
-    }
 
     public long getId() {
         return id;
@@ -70,5 +65,13 @@ public class Customer {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+
+    public List<Adress> getAdresses() {
+        return adresses;
+    }
+
+    public void setAdresses(List<Adress> adresses) {
+        this.adresses = adresses;
     }
 }
