@@ -10,10 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @SpringBootApplication
@@ -27,79 +24,60 @@ public class SpringDataJpaApplication {
 
 
 	@Bean
-	public CommandLineRunner testOneToOneRelationshipCommand (){
+    @Order(1)
+	public CommandLineRunner populateDatabaseCommand(){
 		return args -> {
-			//creamos un cliente
-			Customer jabes = new Customer();
-			jabes.setName("Jabes Borre");
-			jabes.setPassword("Jabesinho");
-			jabes.setUsername("jabys");
-			//primera direccion del cliente
-			Adress jabesAdress1 = new Adress();
-			jabesAdress1.setCountry("Colombia");
-			jabesAdress1.setAdress("Manzana O casa 15, Timayui 2, Santa Marta, Magdalena");
-			//segunda direccion del cliente
-			Adress jabesAdress2 = new Adress();
-			jabesAdress2.setCountry("Colombia");
-			jabesAdress2.setAdress("Calle 8f 31-03, 17 Dic, Santa Marta, Magdalena");
+			Customer pedro = new Customer();
+			pedro.setName("pedro marquez");
+			pedro.setUsername("pedrinhoe");
+			pedro.setPassword("pelloski");
 
-			//CAMINO 1
-			//seteamos las direcciones al cliente
-			//jabes.addAdress(jabesAdress1);
-			//jabes.addAdress(jabesAdress2);
+			Adress pedroAdress1 = new Adress();
+            pedroAdress1.setCountry("Colombia");
+            pedroAdress1.setAdress("barrio la chinita, barranquilla, atlantico");
+			pedro.addAdress(pedroAdress1);
 
-			//seteamos el customer a cada adress
-			//jabesAdress1.setCustomer(jabes);
-			//jabesAdress2.setCustomer(jabes);
+			Customer luis = new Customer();
+			luis.setName("luis diaz marquez");
+			luis.setUsername("luchine");
+			luis.setPassword("luisDi123");
 
-			//guardar cliente
-			//customerCrudRepository.save(jabes);
+			Adress luisAdress1 = new Adress();
+            luisAdress1.setCountry("Colombia");
+            luisAdress1.setAdress("barrio el bosque, barrancas, La Guajira");
+			luis.addAdress(luisAdress1);
 
-			//CAMINO 2
-			//guardamos el cliente y 2 direcciones
-			//jabes.guardarConDirecciones(customerCrudRepository, jabesAdress1, jabesAdress2);
-
-
-
+			//customerCrudRepository.saveAll(List.of(luis, pedro));
 		};
 	}
-
-//	@Bean
-//	@Order(2)
-//	public CommandLineRunner testListAllCustomers(AdressCrudRepository adressCrudRepository){
-//		return args -> {
-//			//System.out.println(adressCrudRepository.findAll());
-//		};
-//	}
 
 	@Bean
-	@Order(1)
-	public CommandLineRunner testOneToManyRelationshipCommand(AdressCrudRepository adressCrudRepository){
+	@Order(2)
+	public CommandLineRunner testQueryMethodAndJPQLExamplesCommand(AdressCrudRepository adressCrudRepository){
 		return args -> {
-			//long id = 2l;
-			adressCrudRepository.findAll()
-				.forEach(each -> {
-					System.out.println("\nPROBANDO RELACIONES BIDIRECCIONALES Direccion --> Customer");
-					System.out.println("Direccion : "+ each);
-					System.out.println("Cliente : "+each.getCustomer().getUsername());
-				});
-			System.out.println("");
+            customerCrudRepository.findCustomersFrom("canada")
+                    .forEach(canada -> {
+                        System.out.println("\nCustomer con direccion canada JPQL");
+                        System.out.println("Customer: "+ canada);
+                        System.out.println("Direcciones en cuestion: "+ canada.getAdresses());
+                    });
+            System.out.println();
 
-			System.out.println("\nPROBANDO RELACIONES BIDIRECCIONALES Customer --> Direccion");
-			customerCrudRepository.findAll()
-					.forEach(customer->{
-						System.out.println("Customer: "+ customer);
-						System.out.println("Direcciones asociadas: "+listarDirecciones(customer.getAdresses()));
-					});
-			System.out.println("");
+//            customerCrudRepository.findDistinctByAddressesCountry("Colombia")
+//                    .forEach(colombiano -> {
+//                        System.out.println("\nCustomer con direccion canada QUERY METHOD");
+//                        System.out.println("Customer: "+ colombiano);
+//                        System.out.println("Direcciones en cuestion: "+ colombiano.getAdresses());
+//                    });
+//            System.out.println();
+
+            adressCrudRepository.findAdressByCustomerNameEndingWithIgnoreCase("re")
+                    .forEach(ez ->{
+                        System.out.println("\nDirecciones con customer name que terminen en 're'");
+                        System.out.println(ez);
+                        System.out.println("nombre: "+ez.getCustomer().getName());
+                    });
 		};
 	}
 
-	private String listarDirecciones(List<Adress> adresses) {
-		String lis = "";
-		for(Adress ad : adresses){
-			lis += ad.toString();
-		}
-		return lis;
-	}
 }

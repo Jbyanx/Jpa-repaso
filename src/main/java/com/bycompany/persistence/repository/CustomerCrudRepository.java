@@ -25,4 +25,10 @@ public interface CustomerCrudRepository extends CrudRepository<Customer, Long> {
 
     @Query(value = "SELECT c.* FROM clientes c WHERE c.nombre LIKE %?1% AND c.id >= ?2 ORDER BY c.usuario DESC", nativeQuery = true)
     List<Customer> findByNameAndIdGreaterThanUsingNativeSQL(String name, Long id);
+
+    @Query("select c from Customer c join fetch adresses adr where adr.country = ?1")
+    //en el fetch va el atributo dentro de Customer con quien se hara el Join
+    List<Customer> findCustomersFrom(String country);
+
+    //List<Customer> findByAddressesCountry(String country);
 }
