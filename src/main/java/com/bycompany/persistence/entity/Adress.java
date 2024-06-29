@@ -14,8 +14,9 @@ public class Adress {
     @Column(name = "direccion")
     private String adress;
 
-    @Column(name = "id_cliente")
-    private Long customerId;
+    @ManyToOne
+    @JoinColumn(name = "id_cliente")
+    Customer customer;
 
     public long getId() {
         return id;
@@ -41,20 +42,20 @@ public class Adress {
         this.adress = adress;
     }
 
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
     @Override
     public String toString() {
         return "Adress{" +
-                "id=" + id +
+                "adress='" + adress + '\'' +
                 ", country='" + country + '\'' +
-                ", adress='" + adress + '\'' +
+                ", id=" + id +
                 '}';
-    }
-
-    public Long getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
     }
 }

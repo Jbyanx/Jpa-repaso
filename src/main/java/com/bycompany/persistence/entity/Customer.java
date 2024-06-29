@@ -1,7 +1,11 @@
 package com.bycompany.persistence.entity;
 
+import com.bycompany.exceptions.AdressNotFoundException;
+import com.bycompany.persistence.repository.CustomerCrudRepository;
 import jakarta.persistence.*;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +22,7 @@ public class Customer {
     private String username;
 
 
-    @OneToMany(targetEntity = Adress.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_cliente")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "", cascade = CascadeType.PERSIST)
     private List<Adress> adresses;
 
     @Column(name = "contrasena")
@@ -41,20 +44,28 @@ public class Customer {
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Adress> getAdresses() {
+        return adresses;
+    }
+
+    public void setAdresses(List<Adress> adresses) {
+        this.adresses = adresses;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -67,11 +78,22 @@ public class Customer {
                 '}';
     }
 
-    public List<Adress> getAdresses() {
-        return adresses;
+    public void addAdress(Adress newAdress) throws AdressNotFoundException {
+        if(newAdress == null) {
+            throw new AdressNotFoundException("Adress is null");
+        }
+        if(this.adresses == null)
+            this.adresses = new ArrayList<>();
+
+        this.adresses.add(newAdress);
+        newAdress.setCustomer(this);
     }
 
-    public void setAdresses(List<Adress> adresses) {
-        this.adresses = adresses;
+    @Transactional
+    public void guardarConDirecciones(CustomerCrudRepository customerCrudRepository, Adress mariaAdress1, Adress mariaAdress2) throws AdressNotFoundException {
+        this.addAdress(mariaAdress1);
+        this.addAdress(mariaAdress2);
+
+        customerCrudRepository.save(this);
     }
 }
